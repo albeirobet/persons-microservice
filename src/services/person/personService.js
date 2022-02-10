@@ -37,6 +37,32 @@ exports.create = async req => {
   }
 };
 
+
+// =========== Function to delete a Person
+// =========== Function to get a Person
+exports.deletePerson = async (req, res) => {
+  customValidator.validateNotNullParameter(
+    req.params.phoneNumber,
+    'phoneNumber'
+  );
+  let person = await Person.findOneAndDelete({
+    phoneNumber: req.params.phoneNumber
+  });
+  if (!person) {
+    throw new ServiceException(
+      commonErrors.EM_COMMON_15,
+      new ApiError(
+        `${commonErrors.EM_COMMON_15}`,
+        `${commonErrors.EM_COMMON_15}`,
+        'EM_COMMON_15',
+        httpCodes.BAD_REQUEST
+      )
+    );
+  }
+  return null;
+};
+
+
 // =========== Function to get a Person
 exports.getPersonByPhoneNumber = async (req, res) => {
   customValidator.validateNotNullParameter(
@@ -58,4 +84,33 @@ exports.getPersonByPhoneNumber = async (req, res) => {
     );
   }
   return person;
+};
+// =========== Function to update a Person
+exports.updateOne = async req => {
+  try {
+    customValidator.validateNotNullRequest(req);
+    customValidator.validateNotNullParameter(
+      req.body.documentNumber,
+      'documentNumber'
+    );
+    let person = await Person.findOne({
+      phoneNumber: req.body.phoneNumber
+    });
+    if (person) {
+      person = await Person.updateOne(req.body);
+    } else {
+      throw new ServiceException(
+        commonErrors.EM_COMMON_07,
+        new ApiError(
+          `${commonErrors.EM_COMMON_07}`,
+          `${commonErrors.EM_COMMON_07}`,
+          'EM_COMMON_07',
+          httpCodes.BAD_REQUEST
+        )
+      );
+    }
+    return "Update Person Succesfully";
+  } catch (error) {
+    throw error;
+  }
 };

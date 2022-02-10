@@ -6,5 +6,6 @@ const router = express.Router();
 
 router.post('/', controller.create);
 router.get('/phoneNumber/:phoneNumber', controller.getPersonByPhoneNumber);
-
+router.delete('/phoneNumber/:phoneNumber', controller.deletePerson);
+router.put('/', controller.update);
 module.exports = router;

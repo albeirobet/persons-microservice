@@ -18,6 +18,21 @@ exports.create = async (req, res) => {
   }
   return res.status(codeHttp).json(generalResponse);
 };
+exports.deletePerson = async (req, res) => {
+  let codeHttp = httpCodes.OK;
+  let generalResponse = new GeneralResponse();
+  generalResponse.success = true;
+  try {
+    const data = await service.deletePerson(req, res);
+    generalResponse = generalResp.generalSuccess(data);
+  } catch (err) {
+    generalResponse = generalResp.generalError(err);
+    codeHttp = generalResponse.apiError.codeHTTP || httpCodes.BAD_REQUEST;
+    generalResponse.apiError.codeHTTP = undefined;
+  }
+  return res.status(codeHttp).json(generalResponse);
+};
+
 
 exports.getPersonByPhoneNumber = async (req, res) => {
   let codeHttp = httpCodes.OK;
@@ -25,6 +40,20 @@ exports.getPersonByPhoneNumber = async (req, res) => {
   generalResponse.success = true;
   try {
     const data = await service.getPersonByPhoneNumber(req, res);
+    generalResponse = generalResp.generalSuccess(data);
+  } catch (err) {
+    generalResponse = generalResp.generalError(err);
+    codeHttp = generalResponse.apiError.codeHTTP || httpCodes.BAD_REQUEST;
+    generalResponse.apiError.codeHTTP = undefined;
+  }
+  return res.status(codeHttp).json(generalResponse);
+};
+exports.update = async (req, res) => {
+  let codeHttp = httpCodes.OK;
+  let generalResponse = new GeneralResponse();
+  generalResponse.success = true;
+  try {
+    const data = await service.updateOne(req, res);
     generalResponse = generalResp.generalSuccess(data);
   } catch (err) {
     generalResponse = generalResp.generalError(err);
