@@ -8,6 +8,7 @@ const xss = require('xss-clean');
 const compression = require('compression');
 const cors = require('cors');
 const personRoute = require('./src/routes/person/personRoute');
+const productRoute = require('./src/routes/product/productRoute');
 const notFoundRoute = require('./src/routes/common/notFoundRoute');
 
 const app = express();
@@ -61,6 +62,7 @@ app.use(xss());
 
 // ================= ROUTES DEFINITION
 app.use('/api/v1/person', personRoute);
+app.use('/api/v1/product', productRoute);
 app.all('*', notFoundRoute);
 
 module.exports = app;
