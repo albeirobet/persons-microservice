@@ -17,6 +17,11 @@ const personSchema = new mongoose.Schema({
     uppercase: true,
     trim: true
   },
+
+  userId: {
+    type: mongoose.Types.ObjectId,
+    ref: 'User'
+  },
   createdAt: {
     type: Date,
     default: new Date()

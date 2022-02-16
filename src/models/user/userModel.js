@@ -3,9 +3,17 @@ const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
   personId: {
-    type: String,
-    trim: true
+    type: mongoose.Types.ObjectId,
+    ref: 'Person'
   },
+
+  // multimediaResourceList: [
+  //   {
+  //     type: mongoose.Types.ObjectId,
+  //     ref: 'MultimediaResource'
+  //   }
+  // ],
+
   status: {
     type: String,
     trim: true

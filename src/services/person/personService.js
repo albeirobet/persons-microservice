@@ -5,6 +5,7 @@ const ServiceException = require('../../utils/errors/serviceException');
 const commonErrors = require('../../utils/constants/commonErrors');
 const httpCodes = require('../../utils/constants/httpCodes');
 const Person = require('../../models/person/personModel');
+const User = require('../../models/user/userModel');
 const mongoose = require('mongoose');
 
 // =========== Function to create a new Person
@@ -19,7 +20,12 @@ exports.create = async req => {
       phoneNumber: req.body.phoneNumber
     });
     if (!person) {
+      // person = {};
+      let user = await User.create({ status: 'Enable' });
+      req.body.userId = user._id;
       person = await Person.create(req.body);
+      user.personId = person._id;
+      user.save();
     } else {
       throw new ServiceException(
         commonErrors.EM_COMMON_07,
@@ -36,7 +42,6 @@ exports.create = async req => {
     throw error;
   }
 };
-
 
 // =========== Function to delete a Person
 // =========== Function to get a Person
@@ -62,7 +67,6 @@ exports.deletePerson = async (req, res) => {
   return null;
 };
 
-
 // =========== Function to get a Person
 exports.getPersonByPhoneNumber = async (req, res) => {
   customValidator.validateNotNullParameter(
@@ -71,7 +75,9 @@ exports.getPersonByPhoneNumber = async (req, res) => {
   );
   let person = await Person.findOne({
     phoneNumber: req.params.phoneNumber
-  });
+  })
+    .populate('userId')
+    .lean();
   if (!person) {
     throw new ServiceException(
       commonErrors.EM_COMMON_15,
@@ -109,7 +115,7 @@ exports.updateOne = async req => {
         )
       );
     }
-    return "Update Person Succesfully";
+    return 'Update Person Succesfully';
   } catch (error) {
     throw error;
   }
