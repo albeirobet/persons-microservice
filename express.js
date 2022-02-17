@@ -7,6 +7,9 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const compression = require('compression');
 const cors = require('cors');
+
+// routes
+const userRoute = require('./src/routes/user/userRoute')
 const personRoute = require('./src/routes/person/personRoute');
 const productRoute = require('./src/routes/product/productRoute');
 const notFoundRoute = require('./src/routes/common/notFoundRoute');
@@ -61,6 +64,7 @@ app.use(mongoSanitize());
 app.use(xss());
 
 // ================= ROUTES DEFINITION
+app.use('/api/v1/user', userRoute);
 app.use('/api/v1/person', personRoute);
 app.use('/api/v1/product', productRoute);
 app.all('*', notFoundRoute);

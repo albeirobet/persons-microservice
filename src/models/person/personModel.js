@@ -5,8 +5,7 @@ const personSchema = new mongoose.Schema({
   names: {
     type: String,
     uppercase: true,
-    trim: true,
-    required: [true, 'Por favor ingrese los nombres, es un dato obligatorio. ']
+    trim: true
   },
   documentNumber: {
     type: Number,
@@ -17,8 +16,7 @@ const personSchema = new mongoose.Schema({
     uppercase: true,
     trim: true
   },
-
-  userId: {
+  user: {
     type: mongoose.Types.ObjectId,
     ref: 'User'
   },

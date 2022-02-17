@@ -1,12 +1,13 @@
-// Created By Eyder Ascuntar Rosales
+// Created By Yeison Gustavo Niño Murcia
 const customValidator = require('../../utils/validators/validator');
 const ApiError = require('../../dto/commons/response/apiErrorDTO');
 const ServiceException = require('../../utils/errors/serviceException');
 const commonErrors = require('../../utils/constants/commonErrors');
 const httpCodes = require('../../utils/constants/httpCodes');
 const Person = require('../../models/person/personModel');
+const User = require('../../models/user/userModel');
 
-// =========== Function to create a new Person
+// =========== Function to create a new User
 exports.create = async req => {
   try {
     customValidator.validateNotNullRequest(req);
@@ -16,9 +17,23 @@ exports.create = async req => {
     );
     let person = await Person.findOne({
       phoneNumber: req.body.phoneNumber
-    });
+    }).populate('user')
+      .lean();
+    // Si no existe como persona se crea usuario y persona
     if (!person) {
+      let user = await User.create({ status: 'Enable' });
+      req.body.userId = user._id;
       person = await Person.create(req.body);
+      user.personId = person._id;
+      user.save();
+    }
+    // Si existe como persona pero no existe usuario asociado 
+    else if (!person.user) {
+      let user = await User.create({ status: 'Enable' });
+      user.person = person._id;
+      user.save();
+      person.userId = user._id;
+      person.save()
     } else {
       throw new ServiceException(
         commonErrors.EM_COMMON_07,
@@ -69,7 +84,7 @@ exports.getPersonByPhoneNumber = async (req, res) => {
   let person = await Person.findOne({
     phoneNumber: req.params.phoneNumber
   })
-    .populate('user')
+    .populate('userId')
     .lean();
   if (!person) {
     throw new ServiceException(

@@ -1,8 +1,8 @@
-// Created By Eyder Ascuntar Rosales
+// Created By Yeison Gustavo Niño Murcia
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-  personId: {
+  person: {
     type: mongoose.Types.ObjectId,
     ref: 'Person'
   },
