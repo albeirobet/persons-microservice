@@ -16,6 +16,7 @@ const userSchema = new mongoose.Schema({
 
   status: {
     type: String,
+    uppercase: true,
     trim: true
   },
   createdAt: {

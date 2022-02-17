@@ -17,23 +17,23 @@ exports.create = async req => {
     );
     let person = await Person.findOne({
       phoneNumber: req.body.phoneNumber
-    }).populate('user')
+    })
+      .populate('userId')
       .lean();
+    let user = undefined;
     // Si no existe como persona se crea usuario y persona
     if (!person) {
-      let user = await User.create({ status: 'Enable' });
-      req.body.userId = user._id;
+      user = await User.create({ status: 'Enable' });
+      req.body.user = user._id;
       person = await Person.create(req.body);
-      user.personId = person._id;
+      user.person = person._id;
       user.save();
     }
     // Si existe como persona pero no existe usuario asociado 
     else if (!person.user) {
-      let user = await User.create({ status: 'Enable' });
-      user.person = person._id;
-      user.save();
-      person.userId = user._id;
-      person.save()
+      user = await User.create({ status: 'Enable', person: person });
+      person.user = user._id;
+      await Person.updateOne({ _id: person._id }, person);
     } else {
       throw new ServiceException(
         commonErrors.EM_COMMON_07,
@@ -45,7 +45,7 @@ exports.create = async req => {
         )
       );
     }
-    return person;
+    return user;
   } catch (error) {
     throw error;
   }
@@ -84,7 +84,7 @@ exports.getPersonByPhoneNumber = async (req, res) => {
   let person = await Person.findOne({
     phoneNumber: req.params.phoneNumber
   })
-    .populate('userId')
+    .populate('user')
     .lean();
   if (!person) {
     throw new ServiceException(
