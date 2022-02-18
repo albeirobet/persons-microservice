@@ -11,8 +11,8 @@ exports.create = async req => {
   try {
     customValidator.validateNotNullRequest(req);
     customValidator.validateNotNullParameter(
-      req.body.documentNumber,
-      'documentNumber'
+      req.body.phoneNumber,
+      'phoneNumber'
     );
     let person = await Person.findOne({
       phoneNumber: req.body.phoneNumber
@@ -68,9 +68,7 @@ exports.getPersonByPhoneNumber = async (req, res) => {
   );
   let person = await Person.findOne({
     phoneNumber: req.params.phoneNumber
-  })
-    .populate('user')
-    .lean();
+  });
   if (!person) {
     throw new ServiceException(
       commonErrors.EM_COMMON_15,

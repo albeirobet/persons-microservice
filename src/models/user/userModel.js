@@ -6,14 +6,12 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Types.ObjectId,
     ref: 'Person'
   },
-
-  // multimediaResourceList: [
-  //   {
-  //     type: mongoose.Types.ObjectId,
-  //     ref: 'MultimediaResource'
-  //   }
-  // ],
-
+  contacts: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: 'Contact'
+    }
+  ],
   status: {
     type: String,
     uppercase: true,
@@ -29,7 +27,7 @@ const userSchema = new mongoose.Schema({
 });
 // userSchema.index({ phoneNumber: +1 });
 const user = mongoose.model('User', userSchema, 'User');
-user.ensureIndexes(function(err) {
+user.ensureIndexes(function (err) {
   if (err) console.log(err);
 });
 module.exports = user;

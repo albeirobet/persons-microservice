@@ -11,6 +11,7 @@ const cors = require('cors');
 // routes
 const userRoute = require('./src/routes/user/userRoute')
 const personRoute = require('./src/routes/person/personRoute');
+const contactRoute = require('./src/routes/contact/contactRoute');
 const productRoute = require('./src/routes/product/productRoute');
 const notFoundRoute = require('./src/routes/common/notFoundRoute');
 
@@ -66,6 +67,7 @@ app.use(xss());
 // ================= ROUTES DEFINITION
 app.use('/api/v1/user', userRoute);
 app.use('/api/v1/person', personRoute);
+app.use('/api/v1/contact', contactRoute);
 app.use('/api/v1/product', productRoute);
 app.all('*', notFoundRoute);
 

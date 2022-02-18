@@ -1,6 +1,6 @@
 // Created By Yeison Gustavo Niño Murcia
 const GeneralResponse = require('../../dto/commons/response/generalResponseDTO');
-const service = require('../../services/user/userService');
+const service = require('../../services/contact/contactService');
 const httpCodes = require('../../utils/constants/httpCodes');
 const generalResp = require('../../utils/responses/generalResp');
 
@@ -18,12 +18,12 @@ exports.create = async (req, res) => {
   }
   return res.status(codeHttp).json(generalResponse);
 };
-exports.deleteUser = async (req, res) => {
+exports.deleteContact = async (req, res) => {
   let codeHttp = httpCodes.OK;
   let generalResponse = new GeneralResponse();
   generalResponse.success = true;
   try {
-    const data = await service.deleteUser(req, res);
+    const data = await service.deleteContact(req, res);
     generalResponse = generalResp.generalSuccess(data);
   } catch (err) {
     generalResponse = generalResp.generalError(err);
@@ -34,12 +34,12 @@ exports.deleteUser = async (req, res) => {
 };
 
 
-exports.getUserByPhoneNumber = async (req, res) => {
+exports.getContactByPhoneNumber = async (req, res) => {
   let codeHttp = httpCodes.OK;
   let generalResponse = new GeneralResponse();
   generalResponse.success = true;
   try {
-    const data = await service.getUserByPhoneNumber(req, res);
+    const data = await service.getContactByPhoneNumber(req, res);
     generalResponse = generalResp.generalSuccess(data);
   } catch (err) {
     generalResponse = generalResp.generalError(err);

@@ -18,7 +18,7 @@ exports.create = async req => {
     let person = await Person.findOne({
       phoneNumber: req.body.phoneNumber
     })
-      .populate('userId')
+      .populate('user')
       .lean();
     let user = undefined;
     // Si no existe como persona se crea usuario y persona
@@ -51,8 +51,37 @@ exports.create = async req => {
   }
 };
 
-// =========== Function to delete a Person
 // =========== Function to get a Person
+exports.getUserByPhoneNumber = async (req, res) => {
+  customValidator.validateNotNullParameter(
+    req.params.phoneNumber,
+    'phoneNumber'
+  );
+  let person = await Person.findOne({
+    phoneNumber: req.params.phoneNumber
+  });
+  let user = null;
+  if (person && person.user) {
+    user = await User.findById(person.user._id)
+      .populate('person')
+      .populate('contacts')
+      .lean();
+  } else {
+    throw new ServiceException(
+      commonErrors.EM_COMMON_15,
+      new ApiError(
+        `${commonErrors.EM_COMMON_15}`,
+        `${commonErrors.EM_COMMON_15}`,
+        'EM_COMMON_15',
+        httpCodes.BAD_REQUEST
+      )
+    );
+  }
+  return user;
+};
+
+
+// =========== Function to delete a Person
 exports.deletePerson = async (req, res) => {
   customValidator.validateNotNullParameter(
     req.params.phoneNumber,
