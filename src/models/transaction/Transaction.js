@@ -17,9 +17,9 @@ const transactionSchema = new mongoose.Schema({
     ref: 'Product',
     required: [true, 'Por favor asocie el producto, es un dato obligatorio. ']
   },
-  unitMeasurement: {
+  unit: {
     type: mongoose.Types.ObjectId,
-    ref: 'UnitMeasurement',
+    ref: 'Unit',
     required: [true, 'Por favor asocie la unidad de medida, es un dato obligatorio. ']
   },
   amount: {

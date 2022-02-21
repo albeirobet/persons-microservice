@@ -1,7 +1,7 @@
 // Created By Yeison Niño
 const mongoose = require('mongoose');
 
-const unitMeasurementSchema = new mongoose.Schema({
+const unitSchema = new mongoose.Schema({
   name: {
     type: String,
     uppercase: true,
@@ -16,9 +16,9 @@ const unitMeasurementSchema = new mongoose.Schema({
     type: Date
   }
 });
-unitMeasurementSchema.index({ name: +1 });
-const UnitMeasurement = mongoose.model('UnitMeasurement', unitMeasurementSchema, 'UnitMeasurement');
-UnitMeasurement.ensureIndexes(function(err) {
+unitSchema.index({ name: +1 });
+const Unit = mongoose.model('Unit', unitSchema, 'Unit');
+Unit.ensureIndexes(function(err) {
   if (err) console.log(err);
 });
-module.exports = UnitMeasurement;
+module.exports = Unit;
