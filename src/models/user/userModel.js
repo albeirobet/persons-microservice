@@ -12,6 +12,12 @@ const userSchema = new mongoose.Schema({
       ref: 'Contact'
     }
   ],
+  transaction: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: 'Transaction'
+    }
+  ],
   status: {
     type: String,
     uppercase: true,

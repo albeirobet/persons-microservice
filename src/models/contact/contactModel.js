@@ -24,7 +24,6 @@ const userSchema = new mongoose.Schema({
     uppercase: true,
     trim: true,
     enum: ["PROVIDER", "CLIENT"],
-    // "Rol no admitido"]
     required: [true, 'Por favor ingrese el rol asociado, es un dato obligatorio.']
   },
   createdAt: {
