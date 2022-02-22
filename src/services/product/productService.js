@@ -7,6 +7,15 @@ const httpCodes = require('../../utils/constants/httpCodes');
 const Product = require('../../models/product/productModel');
 const mongoose = require('mongoose');
 
+// =========== Function to findAll Product
+exports.findAll = async req => {
+  try {
+    return await Product.find();
+  } catch (error) {
+    throw error;
+  }
+};
+
 // =========== Function to create a new Product
 exports.create = async req => {
   try {
