@@ -42,7 +42,7 @@ const transactionSchema = new mongoose.Schema({
     type: Date
   }
 });
-transactionSchema.index({ name: +1 });
+transactionSchema.index({ user: +1 });
 const Transaction = mongoose.model('Transaction', transactionSchema, 'Transaction');
 Transaction.ensureIndexes(function (err) {
   if (err) console.log(err);

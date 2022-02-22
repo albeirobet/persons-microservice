@@ -14,6 +14,7 @@ const personRoute = require('./src/routes/person/personRoute');
 const contactRoute = require('./src/routes/contact/contactRoute');
 const productRoute = require('./src/routes/product/productRoute');
 const unitRoute = require('./src/routes/unit-measurement/unitRoute');
+const transactionRoute = require('./src/routes/transaction/transactionRoute');
 const notFoundRoute = require('./src/routes/common/notFoundRoute');
 
 const app = express();
@@ -71,6 +72,7 @@ app.use('/api/v1/person', personRoute);
 app.use('/api/v1/contact', contactRoute);
 app.use('/api/v1/product', productRoute);
 app.use('/api/v1/unit', unitRoute);
+app.use('/api/v1/transaction', transactionRoute);
 app.all('*', notFoundRoute);
 
 module.exports = app;
