@@ -7,6 +7,15 @@ const httpCodes = require('../../utils/constants/httpCodes');
 const Unit = require('../../models/unit-measurement/unitModel');
 const mongoose = require('mongoose');
 
+// =========== Function to findAll unit
+exports.findAll = async req => {
+  try {
+    return await Unit.find();
+  } catch (error) {
+    throw error;
+  }
+};
+
 // =========== Function to create a new Unit
 exports.create = async req => {
   try {
