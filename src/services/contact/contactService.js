@@ -7,38 +7,38 @@ const httpCodes = require('../../utils/constants/httpCodes');
 const Person = require('../../models/person/personModel');
 const Contact = require('../../models/contact/contactModel');
 const User = require('../../models/user/userModel');
+const Company = require('../../models/company/companyModel');
 
 // =========== Function to create a new contact
 exports.create = async req => {
   try {
     customValidator.validateNotNullRequest(req);
-    customValidator.validateNotNullParameter(req.body.phoneNumber, 'phoneNumber');
+    customValidator.validateNotNullParameter(req.body.companyId, 'companyId');
     customValidator.validateNotNullParameter(req.body.contact, 'contact');
     customValidator.validateNotNullParameter(req.body.contact.phoneNumber, 'contact.phoneNumber');
-    let personUser = await Person.findOne({
-      phoneNumber: req.body.phoneNumber
-    })
-      .populate('user')
+    let company = await Company.findById(
+      req.body.companyId
+    )
+      .populate('owner')
       .lean();
     let contact = null;
-    // Si existe persona y usuario para el phoneNumber se crea y asocia contacto
-    if (personUser && personUser.user) {
-      let personContact = await Person.findOne({
-        phoneNumber: req.body.contact.phoneNumber
-      });
+    // Si existe compañía y usuario principal se crea y asocia contacto
+    if (company && company.owner) {
+      let personContact = await Person.findOne({ phoneNumber: req.body.contact.phoneNumber });
       if (!personContact) {
         personContact = await Person.create(req.body.contact);
       }
-      req.body.contact.user = personUser.user._id;
+      
+      req.body.contact.company = req.body.companyId;
       req.body.contact.person = personContact._id;
       contact = await Contact.create(req.body.contact);
 
       // Actualizar contactos de usuario
-      if (!personUser.user.contacts) {
-        personUser.user.contacts = [];
+      if (!company.contacts) {
+        company.contacts = [];
       }
-      personUser.user.contacts.push(contact._id);
-      await User.updateOne({ _id: personUser.user._id }, personUser.user);
+      company.contacts.push(contact._id);
+      await Company.updateOne({ _id: company._id }, company);
     } else {
       throw new ServiceException(
         contactErrors.EM_CONTACT_00,

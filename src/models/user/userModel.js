@@ -6,16 +6,14 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Types.ObjectId,
     ref: 'Person'
   },
-  contacts: [
+  company: {
+    type: mongoose.Types.ObjectId,
+    ref: 'Company'
+  },
+  companies: [
     {
       type: mongoose.Types.ObjectId,
-      ref: 'Contact'
-    }
-  ],
-  transaction: [
-    {
-      type: mongoose.Types.ObjectId,
-      ref: 'Transaction'
+      ref: 'Company'
     }
   ],
   status: {

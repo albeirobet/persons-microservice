@@ -3,40 +3,30 @@ const customValidator = require('../../utils/validators/validator');
 const ApiError = require('../../dto/commons/response/apiErrorDTO');
 const ServiceException = require('../../utils/errors/serviceException');
 const commonErrors = require('../../utils/constants/commonErrors');
-const companyErrors = require('../../utils/constants/companyErrors');
 const httpCodes = require('../../utils/constants/httpCodes');
 const Person = require('../../models/person/personModel');
 const User = require('../../models/user/userModel');
-const Company = require('../../models/company/companyModel');
 
 // =========== Function to create a new User
 exports.create = async req => {
   try {
     customValidator.validateNotNullRequest(req);
-    customValidator.validateNotNullParameter(req.body.company, 'company');
-    customValidator.validateNotNullParameter(req.body.documentNumber, 'documentNumber');
-    customValidator.validateNotNullParameter(req.body.phoneNumber, 'phoneNumber');
-    let user = undefined;
-    let company = undefined;
+    customValidator.validateNotNullParameter(
+      req.body.documentNumber,
+      'documentNumber'
+    );
     let person = await Person.findOne({
       phoneNumber: req.body.phoneNumber
     })
       .populate('user')
       .lean();
-    // Si no existe como persona se crea usuario, persona y compañia
+    let user = undefined;
+    // Si no existe como persona se crea usuario y persona
     if (!person) {
       user = await User.create({ status: 'Enable' });
       req.body.user = user._id;
-
       person = await Person.create(req.body);
       user.person = person._id;
-      user.save();
-
-      company = await Company.create({ name: req.body.company, owner: user._id, members: [user._id] });
-      // Actualizar datos usuario
-      user.company = company._id;
-      user.companies = [];
-      user.companies.push(company._id);
       user.save();
     }
     // Si existe como persona pero no existe usuario asociado 
@@ -44,13 +34,6 @@ exports.create = async req => {
       user = await User.create({ status: 'Enable', person: person });
       person.user = user._id;
       await Person.updateOne({ _id: person._id }, person);
-
-      company = await Company.create({ name: req.body.company, owner: user._id, members: [user._id] });
-      // Actualizar datos usuario
-      user.company = company._id;
-      user.companies = [];
-      user.companies.push(company._id);
-      user.save();
     } else {
       throw new ServiceException(
         commonErrors.EM_COMMON_07,
@@ -81,8 +64,9 @@ exports.getUserByPhoneNumber = async (req, res) => {
   if (person && person.user) {
     user = await User.findById(person.user._id)
       .populate('person')
-      .populate('companies')
+      .populate('contacts')
       .lean();
+  //  const products = await Product.find().select(['-image'])
   } else {
     throw new ServiceException(
       commonErrors.EM_COMMON_15,

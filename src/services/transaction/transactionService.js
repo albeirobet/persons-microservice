@@ -5,44 +5,63 @@ const ServiceException = require('../../utils/errors/serviceException');
 const commonErrors = require('../../utils/constants/commonErrors');
 const httpCodes = require('../../utils/constants/httpCodes');
 const Transaction = require('../../models/transaction/transactionModel');
+const Item = require('../../models/transaction/itemModel');
 const User = require('../../models/user/userModel');
 const Contact = require('../../models/contact/contactModel');
 const Product = require('../../models/product/productModel');
 const Unit = require('../../models/unit-measurement/unitModel');
+const Company = require('../../models/company/companyModel');
 
 // =========== Function to create a new User
 exports.create = async req => {
-  let user = await User.findById(req.body.userId);
+  customValidator.validateNotNullParameter(req.body.companyId, 'companyId');
+  customValidator.validateNotNullParameter(req.body.items, 'items');
+  let company = await Company.findById(req.body.companyId);
   let contact = await Contact.findById(req.body.contactId);
-  let product = await Product.findById(req.body.productId);
-  let unit = await Unit.findById(req.body.unitId);
-
   try {
     let transaction = {
-      user: user._id,
+      company: company._id,
       contact: contact._id,
-      product: product._id,
-      unit: unit._id,
-      amount: req.body.amount,
+      totalOrder: req.body.totalOrder,
       transactionType: req.body.transactionType
     };
-    return await Transaction.create(transaction);
+    transaction = await Transaction.create(transaction);
+    let items = [];
+
+    for (const element of req.body.items.values()) {
+      let product = await Product.findById(element.productId);
+      let unit = await Unit.findById(element.unitId);
+      let item = {
+        transaction: transaction._id,
+        product: product._id,
+        unit: unit._id,
+        amount: element.amount,
+        priceUnit: element.priceUnit,
+        priceTotal: element.priceTotal
+      }
+      items.push(await Item.create(item));
+    }
+    transaction.items = items;
+    transaction.save();
+    return transaction;
   } catch (error) {
     throw error;
   }
 };
 
 // =========== Function to findAll Product
-exports.findByUserId = async req => {
+exports.findByCompanyId = async req => {
   customValidator.validateNotNullParameter(
-    req.params.userId,
-    'userId'
+    req.params.companyId,
+    'companyId'
   );
   let transactions = await Transaction.find({
-    user: req.params.userId
-  }).populate('product')
-    .populate('unit')
-    .lean();;
+    company: req.params.companyId
+  }).populate('items')
+    // .populate('items.item.product')
+    // .populate('items.item.unit')
+    //.populate({ path: 'items', select: 'product' })
+    .lean();
   if (!transactions) {
     throw new ServiceException(
       commonErrors.EM_COMMON_15,

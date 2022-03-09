@@ -4,6 +4,6 @@ const controller = require('../../controllers/transaction/transactionController'
 
 const router = express.Router();
 
-router.get('/findByUserId/:userId', controller.findByUserId);
+router.get('/findByCompanyId/:companyId', controller.findByCompanyId);
 router.post('/', controller.create);
 module.exports = router;

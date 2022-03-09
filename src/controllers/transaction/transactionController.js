@@ -4,12 +4,12 @@ const service = require('../../services/transaction/transactionService');
 const httpCodes = require('../../utils/constants/httpCodes');
 const generalResp = require('../../utils/responses/generalResp');
 
-exports.findByUserId = async (req, res) => {
+exports.findByCompanyId = async (req, res) => {
   let codeHttp = httpCodes.OK;
   let generalResponse = new GeneralResponse();
   generalResponse.success = true;
   try {
-    const data = await service.findByUserId(req, res);
+    const data = await service.findByCompanyId(req, res);
     generalResponse = generalResp.generalSuccess(data);
   } catch (err) {
     generalResponse = generalResp.generalError(err);

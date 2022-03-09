@@ -3,5 +3,5 @@
 // ET = title
 // EM = message
 module.exports = {
-  EM_CONTACT_00: "Usuario no encontrado",
+  EM_CONTACT_00: "Compañía no encontrada",
 };

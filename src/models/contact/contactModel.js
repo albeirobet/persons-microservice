@@ -7,10 +7,10 @@ const userSchema = new mongoose.Schema({
     ref: 'Person',
     required: [true, 'Para crear contacto debe existir como persona.']
   },
-  user: {
+  company: {
     type: mongoose.Types.ObjectId,
-    ref: 'User',
-    required: [true, 'Para crear contacto debe asociarse el usuario.']
+    ref: 'Company',
+    required: [true, 'Para crear contacto debe asociarse la compañia.']
   },
   /** Seudonimo definido por el usuario para el proveedor o cliente */
   alias: {

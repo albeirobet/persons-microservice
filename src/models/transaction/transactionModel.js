@@ -2,9 +2,9 @@
 const mongoose = require('mongoose');
 
 const transactionSchema = new mongoose.Schema({
-  user: {
+  company: {
     type: mongoose.Types.ObjectId,
-    ref: 'User',
+    ref: 'Company',
     required: [true, 'Por favor asocie el usuario, es un dato obligatorio. ']
   },
   contact: {
@@ -12,19 +12,14 @@ const transactionSchema = new mongoose.Schema({
     ref: 'Contact',
     required: [true, 'Por favor asocie el contacto, es un dato obligatorio. ']
   },
-  product: {
-    type: mongoose.Types.ObjectId,
-    ref: 'Product',
-    required: [true, 'Por favor asocie el producto, es un dato obligatorio. ']
-  },
-  unit: {
-    type: mongoose.Types.ObjectId,
-    ref: 'Unit',
-    required: [true, 'Por favor asocie la unidad de medida, es un dato obligatorio. ']
-  },
-  amount: {
-    type: Number,
-    required: [true, 'Por favor asocie la cantidad, es un dato obligatorio. ']
+  items: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: 'Item',
+    }
+  ],
+  totalOrder: {
+    type: Number
   },
   /** transactionType del contacto BUY - SELL */
   transactionType: {
@@ -42,7 +37,7 @@ const transactionSchema = new mongoose.Schema({
     type: Date
   }
 });
-transactionSchema.index({ user: +1 });
+transactionSchema.index({ company: +1 });
 const Transaction = mongoose.model('Transaction', transactionSchema, 'Transaction');
 Transaction.ensureIndexes(function (err) {
   if (err) console.log(err);
