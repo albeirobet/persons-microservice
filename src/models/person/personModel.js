@@ -16,10 +16,12 @@ const personSchema = new mongoose.Schema({
     uppercase: true,
     trim: true
   },
-  user: {
-    type: mongoose.Types.ObjectId,
-    ref: 'User'
-  },
+  companies: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: 'Company'
+    }
+  ],
   createdAt: {
     type: Date,
     default: new Date()

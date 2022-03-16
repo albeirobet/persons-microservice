@@ -9,12 +9,12 @@ const companySchema = new mongoose.Schema({
   },
   owner: {
     type: mongoose.Types.ObjectId,
-    ref: 'User'
+    ref: 'Person'
   },
   members: [
     {
       type: mongoose.Types.ObjectId,
-      ref: 'User'
+      ref: 'Person'
     }
   ],
   contacts: [
@@ -23,12 +23,6 @@ const companySchema = new mongoose.Schema({
       ref: 'Contact'
     }
   ],
-  // transaction: [
-  //   {
-  //     type: mongoose.Types.ObjectId,
-  //     ref: 'Transaction'
-  //   }
-  // ],
   createdAt: {
     type: Date,
     default: new Date()

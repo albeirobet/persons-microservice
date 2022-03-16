@@ -1,6 +1,6 @@
 // Created By Yeison Gustavo Niño Murcia
 const GeneralResponse = require('../../dto/commons/response/generalResponseDTO');
-const service = require('../../services/user/userService');
+const service = require('../../services/company/companyService');
 const httpCodes = require('../../utils/constants/httpCodes');
 const generalResp = require('../../utils/responses/generalResp');
 
@@ -18,12 +18,13 @@ exports.create = async (req, res) => {
   }
   return res.status(codeHttp).json(generalResponse);
 };
-exports.deleteUser = async (req, res) => {
+
+exports.findByCompanyId = async (req, res) => {
   let codeHttp = httpCodes.OK;
   let generalResponse = new GeneralResponse();
   generalResponse.success = true;
   try {
-    const data = await service.deleteUser(req, res);
+    const data = await service.findByCompanyId(req, res);
     generalResponse = generalResp.generalSuccess(data);
   } catch (err) {
     generalResponse = generalResp.generalError(err);
@@ -33,27 +34,12 @@ exports.deleteUser = async (req, res) => {
   return res.status(codeHttp).json(generalResponse);
 };
 
-
-exports.getUserByPhoneNumber = async (req, res) => {
+exports.addCompanyMember = async (req, res) => {
   let codeHttp = httpCodes.OK;
   let generalResponse = new GeneralResponse();
   generalResponse.success = true;
   try {
-    const data = await service.getUserByPhoneNumber(req, res);
-    generalResponse = generalResp.generalSuccess(data);
-  } catch (err) {
-    generalResponse = generalResp.generalError(err);
-    codeHttp = generalResponse.apiError.codeHTTP || httpCodes.BAD_REQUEST;
-    generalResponse.apiError.codeHTTP = undefined;
-  }
-  return res.status(codeHttp).json(generalResponse);
-};
-exports.update = async (req, res) => {
-  let codeHttp = httpCodes.OK;
-  let generalResponse = new GeneralResponse();
-  generalResponse.success = true;
-  try {
-    const data = await service.updateOne(req, res);
+    const data = await service.addCompanyMember(req, res);
     generalResponse = generalResp.generalSuccess(data);
   } catch (err) {
     generalResponse = generalResp.generalError(err);

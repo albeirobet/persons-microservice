@@ -37,7 +37,6 @@ exports.create = async req => {
 };
 
 // =========== Function to delete a Person
-// =========== Function to get a Person
 exports.deletePerson = async (req, res) => {
   customValidator.validateNotNullParameter(
     req.params.phoneNumber,
@@ -82,6 +81,7 @@ exports.getPersonByPhoneNumber = async (req, res) => {
   }
   return person;
 };
+
 // =========== Function to update a Person
 exports.updateOne = async req => {
   try {

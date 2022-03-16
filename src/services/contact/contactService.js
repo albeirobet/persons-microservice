@@ -6,7 +6,6 @@ const contactErrors = require('../../utils/constants/contactErrors');
 const httpCodes = require('../../utils/constants/httpCodes');
 const Person = require('../../models/person/personModel');
 const Contact = require('../../models/contact/contactModel');
-const User = require('../../models/user/userModel');
 const Company = require('../../models/company/companyModel');
 
 // =========== Function to create a new contact

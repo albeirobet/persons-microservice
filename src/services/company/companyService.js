@@ -3,70 +3,79 @@ const customValidator = require('../../utils/validators/validator');
 const ApiError = require('../../dto/commons/response/apiErrorDTO');
 const ServiceException = require('../../utils/errors/serviceException');
 const commonErrors = require('../../utils/constants/commonErrors');
+const companyErrors = require('../../utils/constants/companyErrors');
 const httpCodes = require('../../utils/constants/httpCodes');
 const Person = require('../../models/person/personModel');
-const User = require('../../models/user/userModel');
+const Company = require('../../models/company/companyModel');
 
 // =========== Function to create a new User
 exports.create = async req => {
   try {
     customValidator.validateNotNullRequest(req);
-    customValidator.validateNotNullParameter(
-      req.body.documentNumber,
-      'documentNumber'
-    );
-    let person = await Person.findOne({
-      phoneNumber: req.body.phoneNumber
-    })
-      .populate('user')
-      .lean();
-    let user = undefined;
-    // Si no existe como persona se crea usuario y persona
-    if (!person) {
-      user = await User.create({ status: 'Enable' });
-      req.body.user = user._id;
-      person = await Person.create(req.body);
-      user.person = person._id;
-      user.save();
-    }
+    customValidator.validateNotNullParameter(req.body.company, 'company');
+    customValidator.validateNotNullParameter(req.body.documentCompany, 'documentCompany');
+    customValidator.validateNotNullParameter(req.body.personId, 'personId');
+    let person = await Person.findById(req.body.personId);
     // Si existe como persona pero no existe usuario asociado 
-    else if (!person.user) {
-      user = await User.create({ status: 'Enable', person: person });
-      person.user = user._id;
+    if (person) {
+      let company = await Company.create({ name: req.body.company, owner: person._id, members: [person._id] });
+      // Actualizar datos usuario
+      person.companies = [];
+      person.companies.push(company._id);
       await Person.updateOne({ _id: person._id }, person);
     } else {
       throw new ServiceException(
-        commonErrors.EM_COMMON_07,
+        commonErrors.EM_COMMON_10,
         new ApiError(
-          `${commonErrors.EM_COMMON_07}`,
-          `${commonErrors.EM_COMMON_07}`,
-          'EM_COMMON_07',
+          `${commonErrors.EM_COMMON_10}`,
+          `${commonErrors.EM_COMMON_10}`,
+          'EM_COMMON_10',
           httpCodes.BAD_REQUEST
         )
       );
     }
-    return user;
+    return person;
   } catch (error) {
     throw error;
   }
 };
 
 // =========== Function to get a Person
-exports.getUserByPhoneNumber = async (req, res) => {
-  customValidator.validateNotNullParameter(
-    req.params.phoneNumber,
-    'phoneNumber'
-  );
-  let person = await Person.findOne({
-    phoneNumber: req.params.phoneNumber
-  });
-  let user = null;
-  if (person && person.user) {
-    user = await User.findById(person.user._id)
-      .populate('person')
-      .populate('contacts')
-      .lean();
-  //  const products = await Product.find().select(['-image'])
+exports.addCompanyMember = async (req, res) => {
+  customValidator.validateNotNullParameter(req.body.companyId, 'companyId');
+  let company = await Company.findById(req.body.companyId);
+  if (company) {
+    console.info(company.owner);
+    console.info(req.body.userId);
+    console.info(company.owner == req.body.userId);
+    if (company.owner == req.body.userId) {
+      let person = await Person.findOne({
+        phoneNumber: req.params.phoneNumber
+      });
+      if (person && person.user) {
+        company.members.push(person.user);
+        await company.updateOne({ _id: person._id }, company);
+      } else {
+        throw new ServiceException(
+          companyErrors.EM_COMPANY_15,
+          new ApiError(
+            `${companyErrors.EM_COMMON_15}`,
+            `${companyErrors.EM_COMMON_15}`,
+            'EM_COMMON_15',
+            httpCodes.BAD_REQUEST
+          )
+        );
+      }
+    } else {
+      throw new ServiceException(companyErrors.E_COMPANY_01,
+        new ApiError(
+          `${companyErrors.E_COMPANY_01}`,
+          `${companyErrors.E_COMPANY_01}`,
+          'E_COMPANY_01',
+          httpCodes.BAD_REQUEST
+        )
+      );
+    }
   } else {
     throw new ServiceException(
       commonErrors.EM_COMMON_15,
@@ -78,20 +87,14 @@ exports.getUserByPhoneNumber = async (req, res) => {
       )
     );
   }
-  return user;
+  return company;
 };
 
-
-// =========== Function to delete a Person
-exports.deletePerson = async (req, res) => {
-  customValidator.validateNotNullParameter(
-    req.params.phoneNumber,
-    'phoneNumber'
-  );
-  let person = await Person.findOneAndDelete({
-    phoneNumber: req.params.phoneNumber
-  });
-  if (!person) {
+// =========== Function to findByCompanyId Product
+exports.findByCompanyId = async req => {
+  customValidator.validateNotNullParameter(req.params.companyId, 'companyId');
+  let company = await Company.findById(req.params.companyId);
+  if (!company) {
     throw new ServiceException(
       commonErrors.EM_COMMON_15,
       new ApiError(
@@ -102,59 +105,5 @@ exports.deletePerson = async (req, res) => {
       )
     );
   }
-  return null;
-};
-
-// =========== Function to get a Person
-exports.getPersonByPhoneNumber = async (req, res) => {
-  customValidator.validateNotNullParameter(
-    req.params.phoneNumber,
-    'phoneNumber'
-  );
-  let person = await Person.findOne({
-    phoneNumber: req.params.phoneNumber
-  })
-    .populate('user')
-    .lean();
-  if (!person) {
-    throw new ServiceException(
-      commonErrors.EM_COMMON_15,
-      new ApiError(
-        `${commonErrors.EM_COMMON_15}`,
-        `${commonErrors.EM_COMMON_15}`,
-        'EM_COMMON_15',
-        httpCodes.BAD_REQUEST
-      )
-    );
-  }
-  return person;
-};
-// =========== Function to update a Person
-exports.updateOne = async req => {
-  try {
-    customValidator.validateNotNullRequest(req);
-    customValidator.validateNotNullParameter(
-      req.body.documentNumber,
-      'documentNumber'
-    );
-    let person = await Person.findOne({
-      phoneNumber: req.body.phoneNumber
-    });
-    if (person) {
-      person = await Person.updateOne(req.body);
-    } else {
-      throw new ServiceException(
-        commonErrors.EM_COMMON_07,
-        new ApiError(
-          `${commonErrors.EM_COMMON_07}`,
-          `${commonErrors.EM_COMMON_07}`,
-          'EM_COMMON_07',
-          httpCodes.BAD_REQUEST
-        )
-      );
-    }
-    return 'Update Person Succesfully';
-  } catch (error) {
-    throw error;
-  }
+  return company;
 };

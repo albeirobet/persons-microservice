@@ -4,7 +4,7 @@
 // EM = message
 module.exports = {
   E_COMPANY_00: "Compañia ya existe",
-  E_COMPANY_01: "Proceso Fallido",
+  E_COMPANY_01: "El usuario no es propietario de la compañía",
   ET_COMPANY_02: "Datos Obligatorios",
   EM_COMPANY_02: "Esta petición requiere datos que son obligatorios",
   EM_COMPANY_03: "Parametro obligatorio",
@@ -19,7 +19,7 @@ module.exports = {
   EM_COMPANY_12: "Error de Ejecución",
   EM_COMPANY_13: "Error al cerrar a la Base de Datos",
   EM_COMPANY_14: "Error al realizar la consulta",
-  EM_COMPANY_15: "No se encontraron datos para su consulta",
+  EM_COMPANY_15: "No se encontraron datos para el número de celular asociado",
   EM_COMPANY_16: "Error al ejecutar la operación",
   EM_COMPANY_17:
     "No fue posible conectar el servicio externo, por favor intente más tarde",

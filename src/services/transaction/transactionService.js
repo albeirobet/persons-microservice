@@ -6,7 +6,6 @@ const commonErrors = require('../../utils/constants/commonErrors');
 const httpCodes = require('../../utils/constants/httpCodes');
 const Transaction = require('../../models/transaction/transactionModel');
 const Item = require('../../models/transaction/itemModel');
-const User = require('../../models/user/userModel');
 const Contact = require('../../models/contact/contactModel');
 const Product = require('../../models/product/productModel');
 const Unit = require('../../models/unit-measurement/unitModel');
