@@ -53,7 +53,7 @@ exports.update = async (req, res) => {
   let generalResponse = new GeneralResponse();
   generalResponse.success = true;
   try {
-    const data = await service.updateOne(req, res);
+    const data = await service.update(req, res);
     generalResponse = generalResp.generalSuccess(data);
   } catch (err) {
     generalResponse = generalResp.generalError(err);

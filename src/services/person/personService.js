@@ -83,25 +83,25 @@ exports.getPersonByPhoneNumber = async (req, res) => {
 };
 
 // =========== Function to update a Person
-exports.updateOne = async req => {
+exports.update = async req => {
   try {
     customValidator.validateNotNullRequest(req);
-    customValidator.validateNotNullParameter(
-      req.body.documentNumber,
-      'documentNumber'
-    );
+    customValidator.validateNotNullParameter(req.body.documentNumber, 'documentNumber');
+    customValidator.validateNotNullParameter(req.body.firstName, 'firstName');
+    customValidator.validateNotNullParameter(req.body.lastName, 'lastName');
     let person = await Person.findOne({
       phoneNumber: req.body.phoneNumber
     });
     if (person) {
-      person = await Person.updateOne(req.body);
+      req.body.updatedAt = new Date();
+      await Person.updateOne({ _id: person._id }, req.body);
     } else {
       throw new ServiceException(
-        commonErrors.EM_COMMON_07,
+        commonErrors.EM_COMMON_15,
         new ApiError(
-          `${commonErrors.EM_COMMON_07}`,
-          `${commonErrors.EM_COMMON_07}`,
-          'EM_COMMON_07',
+          `${commonErrors.EM_COMMON_15}`,
+          `${commonErrors.EM_COMMON_15}`,
+          'EM_COMMON_15',
           httpCodes.BAD_REQUEST
         )
       );

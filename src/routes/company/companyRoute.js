@@ -4,6 +4,7 @@ const controller = require('../../controllers/company/companyController');
 
 const router = express.Router();
 
+router.post('/', controller.create);
 router.get('/findByCompanyId/:companyId', controller.findByCompanyId);
 router.post('/addCompanyMember/', controller.addCompanyMember);
 module.exports = router;

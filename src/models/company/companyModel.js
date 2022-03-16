@@ -7,6 +7,10 @@ const companySchema = new mongoose.Schema({
     uppercase: true,
     trim: true
   },
+  documentNumber: {
+    type: Number,
+    trim: true
+  },
   owner: {
     type: mongoose.Types.ObjectId,
     ref: 'Person'

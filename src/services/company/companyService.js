@@ -13,14 +13,29 @@ exports.create = async req => {
   try {
     customValidator.validateNotNullRequest(req);
     customValidator.validateNotNullParameter(req.body.company, 'company');
-    customValidator.validateNotNullParameter(req.body.documentCompany, 'documentCompany');
+    customValidator.validateNotNullParameter(req.body.documentNumber, 'documentNumber');
     customValidator.validateNotNullParameter(req.body.personId, 'personId');
+    let company = await Company.findOne({
+      documentNumber: req.body.documentNumber
+    });
+    if (company) {
+      throw new ServiceException(
+        commonErrors.EM_COMMON_07,
+        new ApiError(
+          `${commonErrors.EM_COMMON_07}`,
+          `${commonErrors.EM_COMMON_07}`,
+          'EM_COMMON_07',
+          httpCodes.BAD_REQUEST
+        )
+      );
+    }
     let person = await Person.findById(req.body.personId);
-    // Si existe como persona pero no existe usuario asociado 
     if (person) {
-      let company = await Company.create({ name: req.body.company, owner: person._id, members: [person._id] });
+      company = await Company.create({ name: req.body.company, documentNumber: req.body.documentNumber, owner: person._id, members: [person._id] });
       // Actualizar datos usuario
-      person.companies = [];
+      if (!person.companies) {
+        person.companies = [];
+      }
       person.companies.push(company._id);
       await Person.updateOne({ _id: person._id }, person);
     } else {
@@ -34,7 +49,7 @@ exports.create = async req => {
         )
       );
     }
-    return person;
+    return company;
   } catch (error) {
     throw error;
   }

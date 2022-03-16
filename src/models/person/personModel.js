@@ -2,7 +2,12 @@
 const mongoose = require('mongoose');
 
 const personSchema = new mongoose.Schema({
-  names: {
+  firstName: {
+    type: String,
+    uppercase: true,
+    trim: true
+  },
+  lastName: {
     type: String,
     uppercase: true,
     trim: true
@@ -13,7 +18,15 @@ const personSchema = new mongoose.Schema({
   },
   phoneNumber: {
     type: String,
-    uppercase: true,
+    trim: true
+  },
+  email: {
+    type: String,
+    lowercase: true,
+    trim: true
+  },
+  externalId: {
+    type: String,
     trim: true
   },
   companies: [
@@ -32,7 +45,7 @@ const personSchema = new mongoose.Schema({
 });
 personSchema.index({ phoneNumber: +1 });
 const Person = mongoose.model('Person', personSchema, 'Person');
-Person.ensureIndexes(function(err) {
+Person.ensureIndexes(function (err) {
   if (err) console.log(err);
 });
 module.exports = Person;
